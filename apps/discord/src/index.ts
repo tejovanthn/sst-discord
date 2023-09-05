@@ -1,6 +1,6 @@
 import { verifyKey } from "discord-interactions";
-import discordCommands from "./discord-commands";
-import { discordInteraction } from "./discord-interactions";
+import {commands} from "./commands";
+import { handle } from "./commands";
 import { APIInteraction, InteractionResponseType, InteractionType, MessageFlags } from "discord-api-types/v10";
 import { APIGatewayProxyEventV2, APIGatewayProxyHandlerV2 } from "aws-lambda/trigger/api-gateway-proxy";
 import { Handler, useLambdaContext } from "sst/context";
@@ -30,7 +30,7 @@ export const interactionsHandler = async (event: APIGatewayProxyEventV2) => {
 		});
 	}
 
-	return discordInteraction(body)
+	return handle(body)
 		.then((response) => {
 			return ({
 				statusCode: 200,
@@ -42,7 +42,7 @@ export const interactionsHandler = async (event: APIGatewayProxyEventV2) => {
 		}).catch((error) => {
 			debug(error);
 			return {
-				statusCode: 200,
+				statusCode: 500,
 				headers: {
 					"Content-Type": "application/json"
 				},
@@ -92,7 +92,7 @@ export const deploy: APIGatewayProxyHandlerV2 = async (event) => {
 			"Authorization": `Bot ${process.env.DISCORD_TOKEN}`,
 			"Content-Type": "application/json"
 		},
-		body: JSON.stringify(discordCommands)
+		body: JSON.stringify(commands)
 	});
 
 	if (response.status !== 200) {
