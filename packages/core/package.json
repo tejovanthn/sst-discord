@@ -1,0 +1,20 @@
+{
+  "name": "@app/core",
+  "version": "0.0.0",
+  "type": "module",
+  "private": "true",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "sst bind vitest",
+    "typecheck": "tsc -noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^20.5.9",
+    "aws-sdk": "^2.1450.0",
+    "sst": "^2.24.24",
+    "vitest": "^0.34.3"
+  },
+  "dependencies": {
+    "zod": "^3.22.2"
+  }
+}

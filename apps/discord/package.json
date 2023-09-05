@@ -1,0 +1,21 @@
+{
+  "name": "@app/discord",
+  "version": "0.0.0",
+  "type": "module",
+  "private": "true",
+  "scripts": {
+    "test": "sst bind vitest",
+    "typecheck": "tsc -noEmit"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.119",
+    "@types/node": "^20.5.9",
+    "sst": "^2.24.24",
+    "vitest": "^0.34.3"
+  },
+  "dependencies": {
+    "discord-api-types": "^0.37.56",
+    "discord-interactions": "^3.4.0",
+    "node-fetch": "^3.3.2"
+  }
+}
