@@ -6,7 +6,16 @@ export function DiscordStack({ stack, app }: StackContext) {
 
     const update = new Script(stack, "script", {
         onCreate: "apps/discord/src/index.deploy",
-        onUpdate: "apps/discord/src/index.deploy"
+        onUpdate: "apps/discord/src/index.deploy",
+        defaults: {
+            function: {
+                environment: {
+                    DISCORD_TOKEN: process.env.DISCORD_TOKEN || "",
+                    DISCORD_PUBLIC_KEY: process.env.DISCORD_PUBLIC_KEY || "",
+                    DISCORD_APP_ID: process.env.DISCORD_APP_ID || "",
+                },
+            }
+        }
     });
 
     const api = new Api(stack, "Api", {
@@ -21,12 +30,13 @@ export function DiscordStack({ stack, app }: StackContext) {
                 environment: {
                     DISCORD_TOKEN: process.env.DISCORD_TOKEN || "",
                     DISCORD_PUBLIC_KEY: process.env.DISCORD_PUBLIC_KEY || "",
+                    DISCORD_APP_ID: process.env.DISCORD_APP_ID || "",
                 },
             }
         },
         cors: true,
         routes: {
-            "$default": "apps/discord/src/index.handler",
+            "POST /interactions": "apps/discord/src/index.handler",
         }
     })
     stack.addOutputs({

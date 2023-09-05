@@ -5,6 +5,7 @@ import { APIInteraction, InteractionResponseType, InteractionType, MessageFlags 
 import { APIGatewayProxyEventV2, APIGatewayProxyHandlerV2 } from "aws-lambda/trigger/api-gateway-proxy";
 import { Handler, useLambdaContext } from "sst/context";
 import fetch from "node-fetch";
+import debug from "@app/core/debug"
 
 export const interactionsHandler = async (event: APIGatewayProxyEventV2) => {
 	// Verify Key
@@ -19,7 +20,6 @@ export const interactionsHandler = async (event: APIGatewayProxyEventV2) => {
 
 	// Process Message
 	const body = (JSON.parse(event.body.toString()) || {}) as APIInteraction;
-	console.log(body)
 
 	// Respond to Pings
 	if (body.type === InteractionType.Ping) {
@@ -40,7 +40,7 @@ export const interactionsHandler = async (event: APIGatewayProxyEventV2) => {
 				body: JSON.stringify(response)
 			})
 		}).catch((error) => {
-			console.error(error);
+			debug(error);
 			return {
 				statusCode: 200,
 				headers: {
@@ -76,7 +76,7 @@ export const handler: APIGatewayProxyHandlerV2<void> = Handler("api", async (eve
 		}
 	}
 
-	console.log(event)
+	debug(event)
 
 	if (event.rawPath.startsWith("/interactions")) {
 		return interactionsHandler(event);
@@ -86,7 +86,6 @@ export const handler: APIGatewayProxyHandlerV2<void> = Handler("api", async (eve
 });
 
 export const deploy: APIGatewayProxyHandlerV2 = async (event) => {
-	console.log("Deploying Discord Commands", discordCommands)
 	const response = await fetch(`https://discord.com/api/v10/applications/${process.env.DISCORD_APP_ID}/commands`, {
 		method: "PUT",
 		headers: {
@@ -97,10 +96,9 @@ export const deploy: APIGatewayProxyHandlerV2 = async (event) => {
 	});
 
 	if (response.status !== 200) {
-		console.error(JSON.stringify(await response.json()));
+		debug(JSON.stringify(await response.json()));
 		return ({ statusCode: 500 });
 	}
 
-	console.log(response);
 	return ({ statusCode: 200 });
 };
